@@ -2,6 +2,7 @@ import React from 'react';
 import { Platform } from 'react-native';
 import styled from 'styled-components/native';
 import { Ionicons } from '@expo/vector-icons';
+import Fire from '../Fire';
 
 const MainWarp = styled.ScrollView`
 	flex: 1;
@@ -36,14 +37,41 @@ const SettingText = styled.Text`
 	font-size: 15px;
 `;
 
-const iconName = Platform.OS === 'ios' ? 'ios-' : 'md-';
+let iconName = Platform.OS === 'ios' ? 'ios-' : 'md-';
 
-export default class SettingScreen extends React.Component {
+type Props = { uid: string };
+
+export default class SettingScreen extends React.Component<Props> {
+	state = {
+		user: {},
+	};
+
+	unsubscribe = null;
+
+	componentDidMount() {
+		const user = this.props.uid || Fire.shared.uid;
+
+		this.unsubscribe = Fire.shared.firestore
+			.collection('users')
+			.doc(user)
+			.onSnapshot((doc) => {
+				this.setState({ user: doc.data() });
+			});
+	}
+
+	componentWillUnmount() {
+		this.unsubscribe();
+	}
+
 	render() {
 		return (
 			<MainWarp>
 				<SettingView>
-					<SettingBtn onPress={() => {}}>
+					<SettingBtn
+						onPress={() => {
+							Fire.shared.signOut();
+						}}
+					>
 						<SettingIcons name={`${iconName}log-out`} size={26} />
 						<SettingText>로그아웃</SettingText>
 					</SettingBtn>

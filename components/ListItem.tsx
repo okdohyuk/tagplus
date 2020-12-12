@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
 
 import { Text, View } from './Themed';
@@ -13,6 +14,8 @@ const MainView = styled(View)`
 	box-shadow: 0 1px 6px rgba(32, 33, 36, 0.1);
 	overflow: visible;
 `;
+
+const TouchableOpacity = styled.TouchableOpacity``;
 
 const ImageWarp = styled.View`
 	height: 100%;
@@ -40,16 +43,21 @@ const Tag = styled(Text)`
 	font-size: 15px;
 `;
 
-export default function ListItem({ title, tag }: any) {
+export default function ListItem({ title, text, tag, image, file }: any) {
+	const navigation = useNavigation();
 	return (
-		<MainView>
-			<ImageWarp>
-				<Image source={require('../assets/images/default_file.png')} />
-			</ImageWarp>
-			<TextWarp>
-				<Title>{title}</Title>
-				<Tag>{tag}</Tag>
-			</TextWarp>
-		</MainView>
+		<TouchableOpacity
+			onPress={() => navigation.navigate('Detail', { title, text, tag, image, file })}
+		>
+			<MainView>
+				<ImageWarp>
+					<Image source={{ uri: image }} />
+				</ImageWarp>
+				<TextWarp>
+					<Title>{title}</Title>
+					<Tag>{tag}</Tag>
+				</TextWarp>
+			</MainView>
+		</TouchableOpacity>
 	);
 }

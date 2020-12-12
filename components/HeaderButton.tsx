@@ -4,7 +4,7 @@ import { TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ButtonColor } from '../components/Themed';
 
-export default function Pin() {
+export default function HeaderButton() {
 	const navigation = useNavigation();
 	const iconName = Platform.OS === 'ios' ? 'ios-' : 'md-';
 	return (

@@ -1,12 +1,18 @@
 {
   "compilerOptions": {
+    "target": "es5",
     "allowSyntheticDefaultImports": true,
     "jsx": "react-native",
-    "lib": ["dom", "esnext"],
+    "lib": ["es6", "dom"],
+    "allowJs": true,
+    "esModuleInterop": true,
     "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
     "noEmit": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
+    "isolatedModules": true,
     "strict": true
   },
   "exclude": ["node_modules", "babel.config.js", "__tests__/**/*-test.ts"]

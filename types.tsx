@@ -2,6 +2,7 @@ export type RootStackParamList = {
 	Main: undefined;
 	Settings: undefined;
 	UpLoad: undefined;
+	Detail: undefined;
 	NotFound: undefined;
 };
 

@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { Dimensions, Platform } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import Fire from '../Fire';
+
+import EnrollButton from './EnrollButton';
 
 import { Text, View } from './Themed';
 
@@ -63,55 +65,58 @@ const NameUnderLine = styled.View`
 	border-bottom-width: 2px;
 `;
 
-const UpLoadBtn = styled.TouchableOpacity`
-	position: absolute;
-	bottom: 10px;
-	right: 10px;
-`;
+const iconName = Platform.OS === 'ios' ? 'ios-' : 'md-';
 
-const BtnView = styled(View)`
-	align-items: center;
-	flex-direction: row;
-	flex-wrap: wrap;
-	padding: 5px;
-	border-radius: 20px;
-	box-shadow: 0 1px 6px rgba(32, 33, 36, 0.3);
-`;
+export default class UserArea extends React.Component {
+	state = {
+		user: {},
+	};
 
-const BtnText = styled(Text)`
-	text-align: left;
-`;
+	unsubscribe = null;
 
-const Icon = styled(MaterialCommunityIcons)``;
+	componentDidMount() {
+		const user = this.props.uid || Fire.shared.uid;
 
-export default function UserArea() {
-	const iconName = Platform.OS === 'ios' ? 'ios-' : 'md-';
-	const navigation = useNavigation();
-	return (
-		<MainView>
-			<ImageWarp>
-				<Btnfix>
-					<Image source={require('../assets/images/default_profile.jpg')} />
-					<ImageModBtn>
-						<Ionicons
-							name={`${iconName}settings`}
-							// color={ButtonColor}
-							size={25}
+		this.unsubscribe = Fire.shared.firestore
+			.collection('users')
+			.doc(user)
+			.onSnapshot((doc) => {
+				this.setState({ user: doc.data() });
+			});
+	}
+
+	componentWillUnmount() {
+		this.unsubscribe();
+	}
+
+	render() {
+		return (
+			<MainView>
+				<ImageWarp>
+					<Btnfix>
+						<Image
+							source={
+								this.state.user.avatar
+									? { uri: this.state.user.avatar }
+									: require('../assets/images/default_profile.jpg')
+							}
 						/>
-					</ImageModBtn>
-				</Btnfix>
-			</ImageWarp>
-			<NameWarp>
-				<NameUnderLine>
-					<Name>유도혁</Name>
-				</NameUnderLine>
-			</NameWarp>
-			<UpLoadBtn onPress={() => navigation.navigate('UpLoad')}>
-				<BtnView>
-					<BtnText>NFC 등록하기</BtnText>
-					<Icon name="nfc" size={15} color="black" />
-				</BtnView>
-			</UpLoadBtn>
-		</MainView>
-	);
+						<ImageModBtn>
+							<Ionicons
+								name={`${iconName}settings`}
+								// color={ButtonColor}
+								size={25}
+							/>
+						</ImageModBtn>
+					</Btnfix>
+				</ImageWarp>
+				<NameWarp>
+					<NameUnderLine>
+						<Name>{this.state.user.name}</Name>
+					</NameUnderLine>
+				</NameWarp>
+				<EnrollButton />
+			</MainView>
+		);
+	}
 }

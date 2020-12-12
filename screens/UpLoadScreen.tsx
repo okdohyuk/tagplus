@@ -1,10 +1,7 @@
 import React from 'react';
-import { Text, View } from '../components/Themed';
 
-export default function UpLoadScreen() {
-	return (
-		<View>
-			<Text>1</Text>
-		</View>
-	);
+import Form from '../components/Form';
+
+export default function UpLoadScreen({ navigation }: any) {
+	return <Form navigation={navigation} />;
 }
